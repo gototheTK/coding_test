@@ -2,8 +2,7 @@ class Solution {
     public int solution(int[] stones, int k) {
         int answer = 0;
         
-        int left = stones[0];
-        int right = stones[0];
+        int left = stones[0], right = stones[0];
         
         for (int stone : stones) {
             left = Math.min(left, stone);
@@ -23,16 +22,16 @@ class Solution {
                     empty++;
                     if (empty>=k) break;
                 }else {
-                    empty = 0;
+                    empty=0;
                 }
                 
             }
             
             if (empty<k) {
-                count = mid;
-                left = mid+1;
+                count=mid;
+                left=mid+1;
             }else {
-                right = mid-1;
+                right=mid-1;
             }
             
         }
