@@ -1,35 +1,53 @@
 class Solution {
+    
+    public int find(int[] arr, int i) {
+        
+        if (i==arr[i]) return i;
+        
+        return arr[i] = find(arr, arr[i]);
+        
+    }
+    
+    public void union(int[] arr, int a, int b) {
+        
+        int rootA = find(arr, a);
+        int rootB = find(arr, b);
+        
+        if (rootA!=rootB) {
+            if (rootA<rootB) {
+                arr[rootB] = rootA;
+            }else {
+                arr[rootA] = rootB;
+            }
+        }
+        
+    }
+    
     public int solution(int n, int[][] computers) {
         int answer = 0;
+        
         int count = 0;
         
-        boolean[] visited = new boolean[n];
+        int[] networks = new int[n];
         
         for (int i=0; i<n; i++) {
-            
-            if (!visited[i]) {
-                count++;
-                dfs(computers, i, visited);
-            }
-            
+            networks[i] = i;
+        }
+        
+        for (int i=0; i<n; i++) {    
+            for (int j=0; j<n; j++) {
+                
+                if (i!=j && computers[i][j]==1) 
+                    union(networks, i, j);
+            } 
+        }
+        
+        for (int i=0; i<n; i++) {
+            if (networks[i]==i) count++;
         }
         
         answer = count;
         
         return answer;
-    }
-    
-    public void dfs(int[][] computers, int current, boolean[] visited) {
-        
-        visited[current] = true;
-        
-        for (int i=0; i<computers[current].length; i++) {
-            
-            if (current != i && computers[current][i] == 1 && !visited[i]) {
-                dfs(computers, i, visited);
-            }
-            
-        }
-        
     }
 }
