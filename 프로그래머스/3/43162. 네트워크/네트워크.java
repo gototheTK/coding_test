@@ -8,7 +8,7 @@ class Solution {
         
         for (int i=0; i<computers[node].length; i++) {
             
-            if (node!=i && computers[node][i]==1 && !visited[i]) {
+            if (i!=node && computers[node][i]==1 && !visited[i]) {
                 dfs(i, computers, visited);
             }
             
@@ -25,8 +25,8 @@ class Solution {
         for (int i=0; i<n; i++) {
             
             if (!visited[i]) {
-                dfs(i, computers, visited);
                 count++;
+                dfs(i, computers, visited);
             }
             
         }
