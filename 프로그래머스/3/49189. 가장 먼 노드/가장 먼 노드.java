@@ -5,9 +5,11 @@ class Solution {
         int answer = 0;
         
         List<Integer>[] graph = new ArrayList[n+1];
+        int[] dist = new int[n+1];
         
         for (int i=0; i<graph.length; i++) {
             graph[i] = new ArrayList<>();
+            dist[i] = -1;
         }
         
         for (int[] e : edge) {
@@ -16,37 +18,41 @@ class Solution {
             graph[to].add(from);
         }
         
+        int start = 1;
         Queue<int[]> queue = new ArrayDeque<>();
-        queue.add(new int[]{1, 0});
+        queue.add(new int[]{start, 0});
+        dist[start] = 0;
         
-        boolean[] visited = new boolean[n+1];
-        visited[1] = true;
-        
-        int max = 0;
-        int total = 0;
+        int max = -1;
         
         while (!queue.isEmpty()) {
             
             int[] e = queue.poll();
             int from = e[0];
             int count = e[1];
-            
-            if (max!=count) total = 0;
-            
+
             max = Math.max(max, count);
-            total++;
             
             for (int to : graph[from]) {
                 
-                if (visited[to]) continue;
+                if (dist[to]!=-1) continue;
                 
-                visited[to] = true;
-                queue.add(new int[] {to, count+1});
+                dist[to] = count+1;
+                queue.add(new int[]{to, count+1});
+                
             }
             
         }
         
-        answer= total;
+        int count = 0;
+        
+        for (int i=0; i<dist.length; i++) {
+            
+            if (max==dist[i]) count++;
+            
+        }
+        
+        answer = count;
         
         return answer;
     }
