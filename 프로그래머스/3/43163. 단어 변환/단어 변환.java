@@ -3,6 +3,7 @@ import java.util.*;
 class Solution {
     
     public static class Word {
+        
         String word;
         int change;
         
@@ -20,16 +21,15 @@ class Solution {
         queue.add(new Word(begin, 0));
         
         Set<String> selected = new HashSet<>();
-        selected.add(begin);
         
         while (!queue.isEmpty()) {
             
-            Word current = queue.poll();
+            Word word = queue.poll();
             
-            String word = current.word;
-            int change = current.change;
+            String current = word.word;
+            int change = word.change;
             
-            if (word.equals(target)) return change;
+            if (target.equals(current)) return change;
             
             for (String next : words) {
                 
@@ -38,7 +38,9 @@ class Solution {
                 int count = 0;
                 
                 for (int i=0; i<next.length(); i++) {
-                    if (current.word.charAt(i)!=next.charAt(i)) count++;
+                    
+                    if (current.charAt(i)!=next.charAt(i)) count++;
+                    
                 }
                 
                 if (count==1) {
