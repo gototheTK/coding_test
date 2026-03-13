@@ -5,11 +5,9 @@ class Solution {
         int answer = 0;
         
         List<Integer>[] graph = new ArrayList[n+1];
-        int[] dist = new int[n+1];
         
         for (int i=0; i<graph.length; i++) {
             graph[i] = new ArrayList<>();
-            dist[i] = -1;
         }
         
         for (int[] e : edge) {
@@ -19,39 +17,38 @@ class Solution {
         }
         
         int start = 1;
-        Queue<int[]> queue = new ArrayDeque<>();
-        queue.add(new int[]{start, 0});
-        dist[start] = 0;
+        int[] away = new int[n+1];
         
-        int max = -1;
+        for (int i=0; i<away.length; i++) {
+            away[i] = -1;
+        }
         
-        while (!queue.isEmpty()) {
+        Queue<Integer> queue = new ArrayDeque<>();
+        queue.add(start);
+        away[start] = 0;
+        
+        int max = away[start];
+        
+        while(!queue.isEmpty()) {
             
-            int[] e = queue.poll();
-            int from = e[0];
-            int count = e[1];
-
-            max = Math.max(max, count);
+            int from = queue.poll();
+            max = Math.max(max, away[from]);
             
             for (int to : graph[from]) {
                 
-                if (dist[to]!=-1) continue;
+                if (away[to]!=-1) continue;
                 
-                dist[to] = count+1;
-                queue.add(new int[]{to, count+1});
+                away[to] = away[from]+1;
+                queue.add(to);
                 
             }
             
         }
         
         int count = 0;
-        
-        for (int i=0; i<dist.length; i++) {
-            
-            if (max==dist[i]) count++;
-            
+        for (int i=0; i<away.length; i++) {
+            if (max==away[i]) count++;
         }
-        
         answer = count;
         
         return answer;
