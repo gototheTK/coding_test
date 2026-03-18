@@ -8,21 +8,22 @@ class Solution {
         Map<String, Integer> window = new HashMap<>();
         
         int left = 0;
-        int right = 0;
         int minLen = gems.length+1;
         
-        while (true) {
+        for (int right = 0; right<gems.length; right++) {
             
-            if (types.size()==window.size()) {
+            window.put(gems[right], window.getOrDefault(gems[right], 0) + 1);
+            
+            while (window.size()==types.size()) {
                 
                 if (right-left<minLen) {
                     minLen = right-left;
-                    answer = new int[] {left+1, right};
+                    answer = new int[] {left+1, right+1};
                 }
                 
                 int count = window.get(gems[left])-1;
                 
-                if (count==0) {
+                if (count<=0) {
                     window.remove(gems[left]);
                 }else {
                     window.put(gems[left], count);
@@ -30,14 +31,7 @@ class Solution {
                 
                 left++;
                 
-            }else if (right>=gems.length) {
-                break;
-            }else {
-                int count = window.getOrDefault(gems[right], 0)+1;
-                window.put(gems[right], count);
-                right++;
             }
-            
             
         }
         
