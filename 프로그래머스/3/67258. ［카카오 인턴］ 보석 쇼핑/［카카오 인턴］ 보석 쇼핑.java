@@ -6,14 +6,14 @@ class Solution {
         
         Set<String> types = new HashSet<>(Arrays.asList(gems));
         Map<String, Integer> window = new HashMap<>();
-
+        
         int left = 0;
         int right = 0;
         int minLen = gems.length+1;
         
         while (true) {
             
-            if (window.size() == types.size()) {
+            if (types.size()==window.size()) {
                 
                 if (right-left<minLen) {
                     minLen = right-left;
@@ -22,20 +22,22 @@ class Solution {
                 
                 int count = window.get(gems[left])-1;
                 
-                if (count == 0) {
+                if (count==0) {
                     window.remove(gems[left]);
                 }else {
                     window.put(gems[left], count);
                 }
-        
+                
                 left++;
-            }else if(right==gems.length) {
+                
+            }else if (right>=gems.length) {
                 break;
             }else {
                 int count = window.getOrDefault(gems[right], 0)+1;
                 window.put(gems[right], count);
                 right++;
             }
+            
             
         }
         
