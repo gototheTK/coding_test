@@ -2,10 +2,10 @@ class Solution {
     public String solution(String play_time, String adv_time, String[] logs) {
         String answer = "";
         
-        int playTime = convertTimeToSeconds(play_time);
-        int advTime = convertTimeToSeconds(adv_time);
+        int playSeconds = convertTimeToSeconds(play_time);
+        int advSeconds = convertTimeToSeconds(adv_time);
         
-        int[] plays = new int[playTime+1];
+        int[] plays = new int[playSeconds+1];
         
         for (String log : logs) {
             
@@ -25,30 +25,31 @@ class Solution {
         
         long currentSum = 0;
         
-        for (int i=0; i<advTime; i++) {
+        for (int i=0; i<advSeconds; i++) {
             currentSum += plays[i];
         }
         
         long maxSum = currentSum;
-        int maxStartTime = 0;
+        int maxStartSeconds = 0;
         
-        for (int i=advTime; i<=playTime; i++) {
+        for (int i = advSeconds; i<=playSeconds; i++) {
             
-            currentSum = currentSum + plays[i] - plays[i-advTime];
+            currentSum = currentSum + plays[i] - plays[i-advSeconds];
             
             if (currentSum > maxSum) {
                 maxSum = currentSum;
-                maxStartTime = i - advTime + 1;
+                maxStartSeconds = i-advSeconds+1;
             }
             
         }
         
-        answer = convertSecondsToTime(maxStartTime);
+        answer = convertSecondsToTime(maxStartSeconds);
         
         return answer;
     }
     
-    public int convertTimeToSeconds (String time) {
+    public int convertTimeToSeconds(String time) {
+        
         String[] times = time.split(":");
         
         int hours = Integer.parseInt(times[0]);
@@ -56,6 +57,7 @@ class Solution {
         int seconds = Integer.parseInt(times[2]);
         
         return hours * (60 * 60) + minutes * 60 + seconds;
+        
     }
     
     public String convertSecondsToTime(int seconds) {
