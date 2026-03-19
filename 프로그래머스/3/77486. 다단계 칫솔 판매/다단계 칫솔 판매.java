@@ -22,7 +22,7 @@ class Solution {
                 int commision = revenue / 10;
                 int mine = revenue - commision;
                 
-                profitMap.put(person, profitMap.getOrDefault(person, 0)+mine);
+                profitMap.put(person, profitMap.getOrDefault(person, 0) + mine);
                 
                 if (commision<1) break;
                 
@@ -36,10 +36,7 @@ class Solution {
         answer = new int[enroll.length];
         
         for (int i=0; i<enroll.length; i++) {
-            
-            int profit = profitMap.getOrDefault(enroll[i], 0);
-            answer[i] = profit;
-            
+            answer[i] = profitMap.getOrDefault(enroll[i], 0);
         }
         
         return answer;
