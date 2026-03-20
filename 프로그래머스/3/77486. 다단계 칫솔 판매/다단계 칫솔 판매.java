@@ -5,29 +5,28 @@ class Solution {
         int[] answer = {};
         
         Map<String, String> parentMap = new HashMap<>();
+        Map<String, Integer> profitMap = new HashMap<>();
         
         for (int i=0; i<enroll.length; i++) {
             parentMap.put(enroll[i], referral[i]);
         }
         
-        Map<String, Integer> profitMap = new HashMap<>();
-        
         for (int i=0; i<seller.length; i++) {
             
-            String person = seller[i];
+            String member = seller[i];
             int revenue = amount[i] * 100;
             
-            while (!person.equals("-")) {
+            while (!member.equals("-")) {
                 
-                int commision = revenue / 10;
-                int mine = revenue - commision;
+                int commission = revenue / 10;
+                int mine = revenue - commission;
                 
-                profitMap.put(person, profitMap.getOrDefault(person, 0) + mine);
+                profitMap.put(member, profitMap.getOrDefault(member, 0) + mine);
                 
-                if (commision<1) break;
+                if (commission<1) break;
                 
-                person = parentMap.get(person);
-                revenue = commision;
+                member = parentMap.get(member);
+                revenue = commission;
                 
             }
             
@@ -36,7 +35,12 @@ class Solution {
         answer = new int[enroll.length];
         
         for (int i=0; i<enroll.length; i++) {
-            answer[i] = profitMap.getOrDefault(enroll[i], 0);
+            
+            String member = enroll[i];
+            int profit = profitMap.getOrDefault(member, 0);
+            
+            answer[i] = profit;
+            
         }
         
         return answer;
