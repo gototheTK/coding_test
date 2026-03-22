@@ -16,37 +16,31 @@ class Solution {
             int end = convertTimeToSeconds(times[1]);
 
             playCounts[start] += 1;
-            playCounts[end] -= 1;
+            playCounts[end] -= -1;
 
         }
 
         for (int i=1; i<playCounts.length; i++) {
-            playCounts[i] += playCounts[i-1];
+            playCounts[i] -= playCounts[i-1];
         }
 
         int advSeconds = convertTimeToSeconds(adv_time);
-        long maxPlayTimes = 0;
-        int startTime = 0;
+        int count = 0;
+        int time = 0;
 
         for (int i=0; i<advSeconds; i++) {
-            maxPlayTimes += playCounts[i];
+            count = Math.max(count, playCounts[i]);
         }
-
-        long currentPlayTimes = maxPlayTimes;
 
         for (int i=advSeconds; i<=playSeconds; i++) {
 
-            currentPlayTimes = currentPlayTimes + playCounts[i] - playCounts[i-advSeconds];
-
-            if (maxPlayTimes < currentPlayTimes) {
-                startTime = i-advSeconds+1;
-                maxPlayTimes = currentPlayTimes;
-
+            if (playCounts[i] > count) {
+                time = i;
             }
 
         }
 
-        answer = convertSecondsToString(startTime);
+        answer = convertSecondsToString(time);
 
         return answer;
     }
