@@ -4,29 +4,30 @@ class Solution {
     public int[] solution(String[] enroll, String[] referral, String[] seller, int[] amount) {
         int[] answer = {};
         
-        Map<String, String> parentMap = new HashMap<>();
-        Map<String, Integer> profitMap = new HashMap<>();
+        Map<String, String> parentsMap = new HashMap<>();
         
         for (int i=0; i<enroll.length; i++) {
-            parentMap.put(enroll[i], referral[i]);
+            parentsMap.put(enroll[i], referral[i]);
         }
+        
+        Map<String, Integer> profitsMap = new HashMap<>();
         
         for (int i=0; i<seller.length; i++) {
             
             String member = seller[i];
-            int revenue = amount[i] * 100;
+            int profits = amount[i] * 100;
             
             while (!member.equals("-")) {
                 
-                int commission = revenue / 10;
-                int mine = revenue - commission;
+                int commission = profits / 10;
+                int mine = profits - commission;
                 
-                profitMap.put(member, profitMap.getOrDefault(member, 0) + mine);
+                profitsMap.put(member, profitsMap.getOrDefault(member, 0) + mine);
                 
                 if (commission<1) break;
                 
-                member = parentMap.get(member);
-                revenue = commission;
+                profits = commission;
+                member = parentsMap.get(member);
                 
             }
             
@@ -37,9 +38,9 @@ class Solution {
         for (int i=0; i<enroll.length; i++) {
             
             String member = enroll[i];
-            int profit = profitMap.getOrDefault(member, 0);
+            int profits = profitsMap.getOrDefault(member, 0);
             
-            answer[i] = profit;
+            answer[i] = profits;
             
         }
         
