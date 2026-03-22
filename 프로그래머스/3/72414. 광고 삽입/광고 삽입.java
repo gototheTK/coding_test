@@ -1,73 +1,74 @@
+import java.util.*;
+import java.util.stream.*;
+
 class Solution {
     public String solution(String play_time, String adv_time, String[] logs) {
         String answer = "";
-        
+
         int playSeconds = convertTimeToSeconds(play_time);
-        int advSeconds = convertTimeToSeconds(adv_time);
-        
-        int[] plays = new int[playSeconds+1];
-        
+        int[] playCounts = new int[playSeconds+1];
+
         for (String log : logs) {
-            
-            String[] split = log.split("-");
-            
-            int start = convertTimeToSeconds(split[0]);
-            int end = convertTimeToSeconds(split[1]);
-            
-            plays[start] += 1;
-            plays[end] -= 1;
-            
+
+            String[] times = log.split("-");
+
+            int start = convertTimeToSeconds(times[0]);
+            int end = convertTimeToSeconds(times[1]);
+
+            playCounts[start] += 1;
+            playCounts[end] -= 1;
+
         }
-        
-        for (int i=1; i<plays.length; i++) {
-            plays[i] += plays[i-1];
+
+        for (int i=1; i<playCounts.length; i++) {
+            playCounts[i] += playCounts[i-1];
         }
-        
-        long currentSum = 0;
-        
+
+        int advSeconds = convertTimeToSeconds(adv_time);
+        long maxPlayTimes = 0;
+        int startTime = 0;
+
         for (int i=0; i<advSeconds; i++) {
-            currentSum += plays[i];
+            maxPlayTimes += playCounts[i];
         }
-        
-        long maxSum = currentSum;
-        int maxStartSeconds = 0;
-        
-        for (int i = advSeconds; i<=playSeconds; i++) {
-            
-            currentSum = currentSum + plays[i] - plays[i-advSeconds];
-            
-            if (currentSum > maxSum) {
-                maxSum = currentSum;
-                maxStartSeconds = i-advSeconds+1;
+
+        long currentPlayTimes = maxPlayTimes;
+
+        for (int i=advSeconds; i<=playSeconds; i++) {
+
+            currentPlayTimes = currentPlayTimes + playCounts[i] - playCounts[i-advSeconds];
+
+            if (maxPlayTimes < currentPlayTimes) {
+                startTime = i-advSeconds+1;
+                maxPlayTimes = currentPlayTimes;
+
             }
-            
+
         }
-        
-        answer = convertSecondsToTime(maxStartSeconds);
-        
+
+        answer = convertSecondsToString(startTime);
+
         return answer;
     }
-    
-    public int convertTimeToSeconds(String time) {
-        
-        String[] times = time.split(":");
-        
-        int hours = Integer.parseInt(times[0]);
-        int minutes = Integer.parseInt(times[1]);
-        int seconds = Integer.parseInt(times[2]);
-        
-        return hours * (60 * 60) + minutes * 60 + seconds;
-        
+
+    private int convertTimeToSeconds(String time) {
+
+        String[] splits = time.split(":");
+        int hours = Integer.parseInt(splits[0]);
+        int minutes = Integer.parseInt(splits[1]);
+        int seconds = Integer.parseInt(splits[2]);
+
+        return hours * 60 * 60 + minutes * 60 + seconds;
     }
-    
-    public String convertSecondsToTime(int seconds) {
-        
-        int hours = seconds / (60 * 60);
+
+    private String convertSecondsToString(int seconds) {
+
+        int hours = seconds / (60 *60);
         seconds %= (60 * 60);
         int minutes = seconds / 60;
         seconds %= 60;
-        
+
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
-    
+
 }
