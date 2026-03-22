@@ -1,47 +1,45 @@
 import java.util.*;
 import java.util.stream.*;
 
+
 class Solution {
-    
-    static class Album {
-        int index;
-        int plays;
-        
-        public Album(int index, int plays) {
-            this.index = index;
-            this.plays = plays;
-        }
-    }
-    
+
     public int[] solution(String[] genres, int[] plays) {
+
         int[] answer = {};
-        
-        Map<String, List<Album>> albumsMap = new HashMap<>();
-        Map<String, Integer> playsSums = new HashMap<>();
-        
+
+        Map<String, List<Integer>> genresMap = new HashMap<>();
+        Map<String, Integer> playsMap = new LinkedHashMap<>();
+
         for (int i=0; i<genres.length; i++) {
-            
-           albumsMap.computeIfAbsent(genres[i], k -> new ArrayList<>()).add(new Album(i, plays[i]));
-            
-            playsSums.put(genres[i], playsSums.getOrDefault(genres[i], 0) + plays[i]);
+            genresMap.computeIfAbsent(genres[i], k -> new ArrayList<>()).add(i);
+            playsMap.put(genres[i], playsMap.getOrDefault(genres[i], 0) + plays[i]);
         }
+
+        List<String> bestGenres = playsMap.entrySet().stream()
+                .sorted((a, b) -> b.getValue()-a.getValue())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
         
-        List<String> sortedGenres = albumsMap.keySet().stream().sorted((a, b)->playsSums.get(b)-playsSums.get(a)).collect(Collectors.toList());
+
         List<Integer> bestAlbums = new ArrayList<>();
-        
-        for (String genre : sortedGenres) {
-            
-            List<Album> list = albumsMap.get(genre);
-            list.sort((a, b) -> a.plays==b.plays ? a.plays : b.plays-a.plays);
-            
-            bestAlbums.add(list.get(0).index);
-            
-            if (list.size()>1) bestAlbums.add(list.get(1).index);
-            
+
+        for (String genre : bestGenres) {
+
+            List<Integer> albums = genresMap.get(genre).stream()
+                    .sorted((a, b) -> plays[a]==plays[b] ? plays[a] : plays[b]-plays[a])
+                    .collect(Collectors.toList());
+
+            bestAlbums.add(albums.get(0));
+
+            if (albums.size()>1) bestAlbums.add(albums.get(1));
+
         }
-        
+
         answer = bestAlbums.stream().mapToInt(Integer::intValue).toArray();
-        
-        return answer;
+
+        return  answer;
+
     }
+
 }
