@@ -5,8 +5,9 @@ class Solution {
         int m = key.length;
         int n = lock.length;
         
-        int boardSize = n + (m-1)*2;
-        int[][] board = new int[boardSize][boardSize];
+        int size = n + (m-1) * 2;
+        
+        int[][] board = new int[size][size];
         
         for (int i=0; i<n; i++) {
             for (int j=0; j<n; j++) {
@@ -16,11 +17,11 @@ class Solution {
         
         for (int r=0; r<4; r++) {
             
-            key = ratate(key);
+            board = rotate(board);
             
-            for (int x=0; x<boardSize-m+1; x++) {
+            for (int x=0; x<size-m+1; x++) {
                 
-                for (int y=0; y<boardSize-m+1; y++) {
+                for (int y=0; y<size-m+1; y++) {
                     
                     for (int i=0; i<m; i++) {
                         for (int j=0; j<m; j++) {
@@ -28,9 +29,7 @@ class Solution {
                         }
                     }
                     
-                    if (check(board, m, n)) {
-                        return true;
-                    }
+                    if (isMatched(board, m, n)) return true;
                     
                     for (int i=0; i<m; i++) {
                         for (int j=0; j<m; j++) {
@@ -38,25 +37,23 @@ class Solution {
                         }
                     }
                     
-                    
                 }
                 
-            }
+            } 
             
         }
         
-        return answer;
+        return false;
     }
     
-    private int[][] ratate(int[][] arr) {
+    private int[][] rotate(int[][] board) {
         
-        int n = arr.length;
+        int s = board.length;
+        int[][] result = new int[s][s];
         
-        int[][] result = new int[n][n];
-        
-        for (int i=0; i<n; i++) {
-            for (int j=0; j<n; j++) {
-                result[j][n-1-i] = arr[i][j];
+        for (int i=0; i<s; i++) {
+            for (int j=0; j<s; j++ ) {
+                result[i][j] = board[j][s-1-i];
             }
         }
         
@@ -64,7 +61,7 @@ class Solution {
         
     }
     
-    private boolean check(int[][] board, int m, int n) {
+    private boolean isMatched(int[][] board, int m, int n) {
         
         for (int i=m-1; i<m-1+n; i++) {
             for (int j=m-1; j<m-1+n; j++) {
@@ -73,7 +70,6 @@ class Solution {
         }
         
         return true;
-        
-    }
+    } 
     
 }
