@@ -4,19 +4,19 @@ class Solution {
     public int solution(int[][] routes) {
         int answer = 0;
         
-        Arrays.sort(routes, (a, b) -> a[1]-b[1]);
+        Arrays.sort(routes, (a, b)->a[1]-b[1]);
         
+        int position = routes[0][1];
         int encountered = 1;
-        int time = routes[0][1];
         
         for (int[] route : routes) {
             
-            int start = route[0];
-            int end = route[1];
+            int entry = route[0];
+            int exit = route[1];
             
-            if (start>time) {
+            if (entry > position) {
+                position = exit;
                 encountered++;
-                time = end;
             }
             
         }
