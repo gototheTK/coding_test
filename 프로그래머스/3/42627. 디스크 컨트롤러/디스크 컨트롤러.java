@@ -4,35 +4,34 @@ class Solution {
     public int solution(int[][] jobs) {
         int answer = 0;
         
-        Arrays.sort(jobs, (a, b) -> a[0]-b[0]);
+        Arrays.sort(jobs, (a,b)->a[0]-b[0]);
         
-        PriorityQueue<int[]> scheduler = new PriorityQueue<>((a, b) -> a[1]-b[1]);   
-        
+        PriorityQueue<int[]> tasks = new PriorityQueue<>((a,b)->a[1]-b[1]);
         
         int time = 0;
         int completed = 0;
         int index = 0;
-        int period = 0;
+        int turnaroundTime = 0;
         
-        while (completed<jobs.length) {
+        while (completed < jobs.length) {
             
-            while (index<jobs.length && jobs[index][0]<=time) {
-                scheduler.add(jobs[index]);
+            while (index<jobs.length && jobs[index][0] <= time) {
+                tasks.add(jobs[index]);
                 index++;
             }
             
-            if (scheduler.isEmpty()) {
+            if (tasks.isEmpty()) {
                 time = jobs[index][0];
             }else {
-                int[] job = scheduler.remove();
+                int[] job = tasks.remove();
                 time += job[1];
-                period += time - job[0];
+                turnaroundTime += time - job[0];
                 completed++;
             }
             
         }
         
-        answer = period/jobs.length;
+        answer = turnaroundTime/jobs.length;
         
         return answer;
     }
