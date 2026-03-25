@@ -1,32 +1,35 @@
 import java.util.*;
 
-
 class Solution {
     public long solution(int n, int[] times) {
         long answer = 0;
         
         Arrays.sort(times);
         
-        long left = times[0];
-        long right = (long) n * times[times.length-1];
+        long left = (long) times[0];
+        long right = (long) times[times.length-1] * n;
         
-        while (left<=right) {
+        long min = 0;
+        
+        while (left<=right) {   
             
             long mid = (left+right)/2;
-            long count = 0;
+            long completed = 0;
             
-            for (int i=0; i<times.length; i++) {
-                count += mid/times[i];
+            for (int time : times) {
+                completed += mid/time;
             }
             
-            if (count>=n) {
-                answer = mid;
+            if (completed>=n) {
+                min = mid;
                 right = mid-1;
             }else {
                 left = mid+1;
             }
             
         }
+        
+        answer = min;
         
         return answer;
     }
