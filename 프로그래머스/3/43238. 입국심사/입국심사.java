@@ -11,16 +11,18 @@ class Solution {
         
         long min = 0;
         
-        while (left<=right) {   
+        while (left<=right) {
             
             long mid = (left+right)/2;
             long completed = 0;
             
             for (int time : times) {
                 completed += mid/time;
+                
+                if (completed >=n) break;                
             }
             
-            if (completed>=n) {
+            if (completed >= n) {
                 min = mid;
                 right = mid-1;
             }else {
@@ -30,7 +32,7 @@ class Solution {
         }
         
         answer = min;
-        
+
         return answer;
     }
 }
