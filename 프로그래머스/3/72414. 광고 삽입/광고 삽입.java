@@ -3,8 +3,6 @@ class Solution {
         String answer = "";
         
         int playSeconds = convertTimeToSeconds(play_time);
-        int advSeconds = convertTimeToSeconds(adv_time);
-        
         int[] plays = new int[playSeconds+1];
         
         for (String log : logs) {
@@ -15,7 +13,7 @@ class Solution {
             int end = convertTimeToSeconds(times[1]);
             
             plays[start] += 1;
-            plays[end] -= 1;
+            plays[end] += -1;
             
         }
         
@@ -23,22 +21,23 @@ class Solution {
             plays[i] += plays[i-1];
         }
         
-        long currentSeconds = 0;
+        int advSeconds = convertTimeToSeconds(adv_time);
+        long maxPlayCount = 0;
         
         for (int i=0; i<advSeconds; i++) {
-            currentSeconds += plays[i];
+            maxPlayCount += plays[i];
         }
         
-        long maxSeconds = currentSeconds;
+        long playCount = maxPlayCount;
         int startSeconds = 0;
         
         for (int i=advSeconds; i<=playSeconds; i++) {
             
-            currentSeconds = currentSeconds + plays[i] - plays[i-advSeconds];
+            playCount = playCount + plays[i] - plays[i-advSeconds];
             
-            if (currentSeconds>maxSeconds) {
-                maxSeconds = currentSeconds;
-                startSeconds = i - advSeconds + 1;
+            if (playCount > maxPlayCount) {
+                maxPlayCount = playCount;
+                startSeconds = i-advSeconds+1;
             }
             
         }
@@ -56,18 +55,19 @@ class Solution {
         int minutes = Integer.parseInt(times[1]);
         int seconds = Integer.parseInt(times[2]);
         
-        return hours * 60 * 60 + minutes * 60 + seconds;
+        return hours * (60 * 60) + minutes * 60 + seconds;
         
     }
     
     private String convertSecondsToTime(int seconds) {
         
         int hours = seconds / (60 * 60);
-        seconds %= (60 * 60);
+        seconds %= (60* 60);
         int minutes = seconds / 60;
         seconds %= 60;
         
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        
     }
     
 }
