@@ -4,36 +4,35 @@ class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
         int[] answer = {};
         
-        int jobs = progresses.length;
-        Queue<Integer> queue = new ArrayDeque<>();
+        List<Integer> days = new ArrayList<>();
         
-        for (int i=0; i<jobs; i++) {
-            int ceil = (100-progresses[i])%speeds[i] == 0 ? 0 : 1;
-            int days = (100-progresses[i])/speeds[i] + ceil;
-            queue.add(days);
+        for (int i=0; i<progresses.length; i++) {
+            
+            int reminder = (100-progresses[i]) % speeds[i] == 0 ? 0 : 1;
+            int duration = (100-progresses[i]) / speeds[i] + reminder;
+            
+            days.add(duration + reminder);
+            
         }
         
         List<Integer> dist = new ArrayList<>();
         
-        int num = 1;
-        int taken = queue.poll();
+        int count = 1;
+        int turnaround = days.remove(0);
         
-        while (!queue.isEmpty()) {
+        for (int day : days) {
             
-            int days = queue.poll();
-            
-            
-            if (taken>=days) {
-                num++;
+            if (turnaround < day) {
+                dist.add(count);
+                turnaround = day;
+                count = 1;
             }else {
-                dist.add(num);
-                taken = days;
-                num = 1;
+                count++;
             }
             
         }
         
-        dist.add(num);
+        dist.add(count);
         
         answer = dist.stream().mapToInt(Integer::intValue).toArray();
         
