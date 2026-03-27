@@ -2,27 +2,27 @@ class Solution {
     public int solution(int[][] triangle) {
         int answer = 0;
         
-        int max = 0;
-        
         for (int i=1; i<triangle.length; i++) {
             
             for (int j=0; j<triangle[i].length; j++) {
                 
-                if (j==0) {
-                    triangle[i][j] += triangle[i-1][j];
-                }else if (j==triangle[i].length-1) {
-                    triangle[i][j] += triangle[i-1][j-1];
-                }else {
-                    triangle[i][j] += Math.max(triangle[i-1][j], triangle[i-1][j-1]);
-                }
+                int left = triangle[i][j];
+                int right = triangle[i][j];
                 
-                max = Math.max(max, triangle[i][j]);
+                left += j == 0 ? 0 : triangle[i-1][j-1];
+                right += j == triangle[i].length-1 ? 0 : triangle[i-1][j];
+                
+                int max = Math.max(left, right);
+                
+                triangle[i][j] = max;
+                
+                answer = Math.max(answer, max);
                 
             }
             
         }
         
-        answer = max;
+        
         
         return answer;
     }
