@@ -11,18 +11,17 @@ class Solution {
         
         int count = 0;
         
-        while (left <= right) {
+        while (left<=right) {
             
             int total = people[left] + people[right];
             
-            if(total<=limit) {
+            if (total<=limit) {
                 left++;
-                right--;
-            }else {
-                right--;
             }
             
+            right--;
             count++;
+            
         }
         
         answer = count;
