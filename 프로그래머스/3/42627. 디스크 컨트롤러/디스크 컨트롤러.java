@@ -4,34 +4,34 @@ class Solution {
     public int solution(int[][] jobs) {
         int answer = 0;
         
-        Arrays.sort(jobs, (a,b)->a[0]-b[0]);
+        Arrays.sort(jobs, (a, b) -> a[0]-b[0]);
         
-        PriorityQueue<int[]> tasks = new PriorityQueue<>((a,b)->a[1]-b[1]);
+        PriorityQueue<int[]> queue = new PriorityQueue<>((a,b) -> a[1]-b[1]);
         
-        int time = 0;
-        int completed = 0;
+        int count = 0;
         int index = 0;
-        int turnaroundTime = 0;
+        int time = 0;
+        int periord = 0;
         
-        while (completed < jobs.length) {
+        while (count < jobs.length) {
             
             while (index<jobs.length && jobs[index][0] <= time) {
-                tasks.add(jobs[index]);
+                queue.add(jobs[index]);
                 index++;
             }
             
-            if (tasks.isEmpty()) {
+            if (queue.isEmpty()) {
                 time = jobs[index][0];
             }else {
-                int[] job = tasks.remove();
+                int[] job = queue.remove();
                 time += job[1];
-                turnaroundTime += time - job[0];
-                completed++;
+                periord += time - job[0];
+                count++;
             }
             
         }
         
-        answer = turnaroundTime/jobs.length;
+        answer = periord/jobs.length;
         
         return answer;
     }
