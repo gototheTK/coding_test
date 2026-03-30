@@ -3,18 +3,14 @@ class Solution {
         String answer = "";
         
         StringBuilder sb = new StringBuilder();
+        String[] numbers = {"4", "1", "2"};
         
         while (n > 0) {
             
-            int remainder = n % 3;
+            int index = n%3;
+            sb.insert(0, numbers[index]);
             
-            if (remainder == 0) {
-                sb.insert(0, '4');
-                n = (n / 3) - 1;
-            }else {
-                sb.insert(0, remainder);
-                n = n / 3;
-            }
+            n = (n-1)/3;
             
         }
         
