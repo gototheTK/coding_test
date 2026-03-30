@@ -1,21 +1,22 @@
 class Solution {
     
-    public int find(int[] arr, int i) {
+    private int find(int[] arr, int i) {
         
         if (arr[i]==i) return i;
         
         return arr[i] = find(arr, arr[i]);
+        
     }
     
-    public void union(int[] arr, int a, int b) {
+    private void union(int[] arr, int a, int b) {
         
         int rootA = find(arr, a);
         int rootB = find(arr, b);
         
-        if (rootA!=rootB) {
+        if (rootA != rootB) {
             
-            if (rootA<rootB) {
-                arr[rootB] = rootA;
+            if (rootA < rootB) {
+                arr[rootB] = rootA;  
             }else {
                 arr[rootA] = rootB;
             }
@@ -27,29 +28,23 @@ class Solution {
     public int solution(int n, int[][] computers) {
         int answer = 0;
         
-        int count = 0;
-        
-        int[] networks = new int[n];
+        int count = n;
+        int[] group = new int[n];
         
         for (int i=0; i<n; i++) {
-            networks[i] = i;
+            group[i] = i;
         }
         
         for (int i=0; i<n; i++) {
             
             for (int j=0; j<n; j++) {
                 
-                if (computers[i][j]==1) {
-                    union(networks, i, j);
+                if (find(group, i) != find(group, j) && computers[i][j]==1) {
+                    union(group, i, j);
+                    count--;
                 }
                 
             }
-            
-        }
-        
-        for (int i=0; i<n; i++) {
-            
-            if (networks[i]==i) count++;
             
         }
         
