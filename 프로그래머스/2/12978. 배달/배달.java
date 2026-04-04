@@ -20,13 +20,12 @@ class Solution {
             graph[end].add(new int[]{start, cost});
         }
         
-        int[] visited = new int[N+1];
+        int[] dist = new int[N+1];
+        Arrays.fill(dist, Integer.MAX_VALUE);
         
         PriorityQueue<int[]> queue = new PriorityQueue<>((o1, o2) -> o1[1]-o2[1]);
-        visited[1] = 1;
+        dist[1] = 1;
         queue.add(new int[]{1, 0});
-        
-        int count = 1;
         
         while (!queue.isEmpty()) {
             
@@ -35,6 +34,8 @@ class Solution {
             int start = current[0];
             int currentCost = current[1];
             
+            if (currentCost > dist[start]) continue;
+            
             for (int[] next : graph[start]) {
                 
                 int end = next[0];
@@ -42,18 +43,20 @@ class Solution {
                 
                 int total = currentCost+nextCost;
                 
-                if (total <= K && visited[end] == 0) {
-                    count++;
-                    visited[end] = total;
-                    queue.add(new int[]{end, total});
-                }
                 
-                if (total <= K && visited[end] > total) {
-                    visited[end] = total;
+                if (dist[end] > total) {
+                    dist[end] = total;
                     queue.add(new int[]{end, total});
                 }
                 
             }
+            
+        }
+        
+        int count = 0;
+        for (int i=1; i<=N; i++) {
+            
+            if (dist[i]<=K) count++;
             
         }
         
