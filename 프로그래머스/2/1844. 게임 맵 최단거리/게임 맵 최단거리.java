@@ -4,42 +4,36 @@ class Solution {
     public int solution(int[][] maps) {
         int answer = -1;
         
+        int m = maps.length-1;
+        int n = maps[0].length-1;
+        
         Queue<int[]> queue = new ArrayDeque<>();
         maps[0][0] = 0;
-        queue.add(new int[]{0, 0, 1});
+        queue.add(new int[] {0, 0, 1});
         
-        int n = maps[0].length-1;
-        int m = maps.length-1;
+        int[] dx = {0, 0, 1, -1};
+        int[] dy = {1, -1, 0, 0};
         
-        
-        while (!queue.isEmpty()) {
+        while(!queue.isEmpty()) {
             
-            int[] coordinate = queue.poll();
+            int[] move = queue.poll();
             
-            int x = coordinate[0];
-            int y = coordinate[1];
-            int c = coordinate[2];
+            int x = move[0];
+            int y = move[1];
+            int cost = move[2];
             
-            if (x==n && y==m) return c;
+            if (x==m && y==n) return cost;
             
-            if (x+1 <= n && maps[y][x+1]==1) {
-                maps[y][x+1] = 0;
-                queue.add(new int[]{x+1, y, c+1});
-            }
+            for (int i=0; i<4; i++) {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+                
             
-            if (y+1 <= m && maps[y+1][x]==1) {
-                maps[y+1][x] = 0;
-                queue.add(new int[]{x, y+1, c+1});
-            }
-            
-            if (x-1 >= 0 && maps[y][x-1]==1) {
-                maps[y][x-1] = 0;
-                queue.add(new int[]{x-1, y, c+1});
-            }
-            
-            if (y-1 >= 0 && maps[y-1][x]==1) {
-                maps[y-1][x] = 0;
-                queue.add(new int[]{x, y-1, c+1});
+                if (nx<=m && nx>=0 && ny<=n && ny>=0 && maps[nx][ny]==1) {
+                    maps[nx][ny] = 0;
+                    queue.add(new int[] {nx, ny, cost+1});
+                }
+                
             }
             
         }
