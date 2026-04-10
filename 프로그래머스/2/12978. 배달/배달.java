@@ -2,51 +2,46 @@ import java.util.*;
 
 class Solution {
     public int solution(int N, int[][] road, int K) {
-        int answer = 0;
+        int answer = 1;
+        
+        if (N==1) return answer;
         
         List<int[]>[] graph = new ArrayList[N+1];
+        int[] dist = new int[N+1];
         
-        for (int i=0; i<graph.length; i++) {
+        for (int i=1; i<=N; i++) {
             graph[i] = new ArrayList<>();
+            dist[i] = Integer.MAX_VALUE;
         }
         
         for (int[] route : road) {
-            
-            int start = route[0];
-            int end = route[1];
-            int cost = route[2];
-            
-            graph[start].add(new int[]{end, cost});
-            graph[end].add(new int[]{start, cost});
+            int from = route[0], to = route[1], cost = route[2];
+            graph[from].add(new int[]{to, cost});
+            graph[to].add(new int[]{from, cost});
         }
         
-        int[] dist = new int[N+1];
-        Arrays.fill(dist, Integer.MAX_VALUE);
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(o->o[1]));
+        dist[1] = 0;
+        pq.add(new int[]{1, 0});
         
-        PriorityQueue<int[]> queue = new PriorityQueue<>((o1, o2) -> o1[1]-o2[1]);
-        dist[1] = 1;
-        queue.add(new int[]{1, 0});
-        
-        while (!queue.isEmpty()) {
+        while (!pq.isEmpty()) {
             
-            int[] current = queue.poll();
+            int[] current = pq.poll();
             
-            int start = current[0];
-            int currentCost = current[1];
+            int from = current[0];
+            int fromCost = current[1];
             
-            if (currentCost > dist[start]) continue;
+            if (fromCost > dist[from]) continue;
             
-            for (int[] next : graph[start]) {
+            
+            for (int[] next : graph[from]) {
                 
-                int end = next[0];
-                int nextCost = next[1];
+                int to = next[0];
+                int toCost = fromCost + next[1];
                 
-                int total = currentCost+nextCost;
-                
-                
-                if (dist[end] > total) {
-                    dist[end] = total;
-                    queue.add(new int[]{end, total});
+                if (dist[to] > toCost) {
+                    dist[to] = toCost;
+                    pq.add(new int[] {to, toCost});
                 }
                 
             }
@@ -54,10 +49,11 @@ class Solution {
         }
         
         int count = 0;
+        
         for (int i=1; i<=N; i++) {
-            
-            if (dist[i]<=K) count++;
-            
+            if (dist[i]<=K) {
+                count++;
+            }
         }
         
         answer = count;
