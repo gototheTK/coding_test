@@ -4,23 +4,24 @@ class Solution {
     public long solution(int n, int[] times) {
         long answer = 0;
         
-        
-        
         Arrays.sort(times);
         
-        long left = (long) 1;
+        long left = (long) times[0];
         long right = (long) times[times.length-1] * n;
         
         while (left<=right) {
             
-            long mid = (right+left)/2;
-            long count = 0;
+            long mid = (left + right)/2;
+            long completed = 0;
             
             for (int i=0; i<times.length; i++) {
-                count += mid/times[i];
+                
+                completed += mid/times[i];
+                
+                if (completed >= n) break;
             }
             
-            if (count >= n) {
+            if (completed >= n) {
                 answer = mid;
                 right = mid-1;
             }else {
