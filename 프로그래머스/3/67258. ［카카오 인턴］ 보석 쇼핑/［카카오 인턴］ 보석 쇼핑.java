@@ -5,40 +5,29 @@ class Solution {
     public int[] solution(String[] gems) {
         int[] answer = {};
         
-        /**
-        
-        처음부터 시작하여서, 범위를 모든 보석을 찾을 때까지 늘려간다.
-        모든 보석을 찾았으면, 시작부분을 증가시키고, 다시 모든 보석을 찾을 때 까지 늘려간다.
-        끝부분이 마지막까지 닿을 때까지 반복한다.
-        그러기 위해서는, 모든 종류의 보석의 개수를 구해야 한다.
-        
-        **/
-        
         int types = Arrays.stream(gems).collect(Collectors.toSet()).size();
         
-        Map<String, Integer> typesMap = new HashMap<>();
-        
-        int left = 0;
+        Map<String, Integer> selected = new HashMap<>();
         int minLen = gems.length+1;
+        int left = 0;
         
-        for (int right=0; right<gems.length; right++) {
+        for (int right = 0; right<gems.length; right++) {
             
-            int rightCount = typesMap.getOrDefault(gems[right], 0) + 1;
-            typesMap.put(gems[right], rightCount);
+            selected.put(gems[right], selected.getOrDefault(gems[right], 0) + 1);
             
-            while (typesMap.size() == types) {
+            while (selected.size() == types) {
                 
                 if (minLen > right-left) {
                     minLen = right-left;
                     answer = new int[] {left+1, right+1};
                 }
                 
-                int leftCount = typesMap.getOrDefault(gems[left], 0) - 1;
+                int count = selected.get(gems[left])-1;
                 
-                if (leftCount == 0) {
-                    typesMap.remove(gems[left]);
+                if (count==0) {
+                    selected.remove(gems[left]);
                 }else {
-                    typesMap.put(gems[left], leftCount);
+                    selected.put(gems[left], count);
                 }
                 
                 left++;
