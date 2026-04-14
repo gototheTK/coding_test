@@ -4,37 +4,42 @@ class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
         int[] answer = {};
         
-        List<Integer> days = new ArrayList<>();
+        Queue<int[]> queue = new ArrayDeque<>();
         
         for (int i=0; i<progresses.length; i++) {
-            
-            int reminder = (100-progresses[i]) % speeds[i] == 0 ? 0 : 1;
-            int duration = (100-progresses[i]) / speeds[i] + reminder;
-            
-            days.add(duration + reminder);
-            
+            queue.add(new int[] {progresses[i], speeds[i]});
         }
         
-        List<Integer> dist = new ArrayList<>();
+        List<Integer> result = new ArrayList<>();
         
-        int count = 1;
-        int turnaround = days.remove(0);
-        
-        for (int day : days) {
+        while (!queue.isEmpty()) {
             
-            if (turnaround < day) {
-                dist.add(count);
-                turnaround = day;
-                count = 1;
-            }else {
-                count++;
+            int size = queue.size();
+            
+            for (int i=0; i<size; i++) {
+                int[] jobs = queue.poll();
+                queue.add(new int[] {jobs[0] + jobs[1], jobs[1]});
             }
             
+            int count = 0;
+            
+            for (int i=0; i<size; i++) {
+                int[] jobs = queue.peek();
+                
+                if (jobs[0] >= 100) {
+                    count++;
+                    queue.poll();
+                }else {
+                    break;
+                }
+                
+            }
+            
+            result.add(count);
+            
         }
         
-        dist.add(count);
-        
-        answer = dist.stream().mapToInt(Integer::intValue).toArray();
+        answer = result.stream().mapToInt(Integer::valueOf).filter(n->n>0).toArray();
         
         return answer;
     }
