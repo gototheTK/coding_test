@@ -5,42 +5,50 @@ class Solution {
     public int[] solution(String[] genres, int[] plays) {
         int[] answer = {};
         
-        Map<String, List<Integer>> genresMap = new HashMap<>();
-        Map<String, Integer> playsSumMap = new HashMap<>();
+        /**
+        장르별 곡들을 분류한다.
+        가장 많이 재생된 장르의 순위를 정렬하고,
+        분류한 곡들을 재생순으로 순위를 매긴다.
+        **/
+        
+        Map<String, List<Integer>> bestGenresMap = new HashMap<>();
+        Map<String, Integer> bestPlaysMap = new HashMap<>();
         
         for (int i=0; i<genres.length; i++) {
             
-            String genre = genres[i];
-            int play = plays[i];
+            bestGenresMap.computeIfAbsent(genres[i], k ->new ArrayList<>());
+            bestGenresMap.get(genres[i]).add(i);
             
-            List<Integer> list = genresMap.computeIfAbsent(genre, k -> new ArrayList<>());
-            list.add(i);
-            
-            playsSumMap.put(genre, playsSumMap.getOrDefault(genre, 0) + play);
-            
+            int sum = bestPlaysMap.getOrDefault(genres[i], 0) + plays[i];
+            bestPlaysMap.put(genres[i], sum);
         }
         
-        List<String> sortedGenres = playsSumMap.entrySet().stream()
-            .sorted((e1, e2) -> e2.getValue() - e1.getValue())
-            .map(Map.Entry::getKey)
+        List<String> bestGenres = bestGenresMap.keySet().stream()
+            .sorted((o1, o2) -> bestPlaysMap.get(o2)-bestPlaysMap.get(o1))
             .collect(Collectors.toList());
         
-        List<Integer> bestAlbums = new ArrayList<>();
+        List<Integer> result = new ArrayList<>();
         
-        for (String genre : sortedGenres) {
+        for (String genre : bestGenres) {
             
-            List<Integer> albums = genresMap.get(genre);
-            albums.sort((a, b) -> plays[b]-plays[a]);
+            List<Integer> list = bestGenresMap.get(genre).stream()
+                .sorted((o1, o2)-> {
+                    
+                    if (plays[o1]==plays[o2]) return o1-o2;
+                    
+                    return plays[o2]-plays[o1];
+                    
+                })
+                .collect(Collectors.toList());
             
-            bestAlbums.add(albums.get(0));
+            result.add(list.get(0));
             
-            if (albums.size()>1) {
-                bestAlbums.add(albums.get(1));
-            }
+            if (list.size()>1)
+                result.add(list.get(1));
             
         }
         
-        answer = bestAlbums.stream().mapToInt(Integer::intValue).toArray();
+        answer = result.stream().mapToInt(Integer::valueOf).toArray();
         
         return answer;
     }
