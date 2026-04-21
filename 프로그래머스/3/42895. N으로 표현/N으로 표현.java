@@ -5,7 +5,7 @@ class Solution {
         int answer = -1;
         
         if (N == number) return 1;
-        
+            
         List<Set<Integer>> list = new ArrayList<>();
         
         for (int i=0; i<=8; i++) {
@@ -25,7 +25,7 @@ class Solution {
                 for (int num1 : list.get(j)) {
                     
                     for (int num2 : list.get(k)) {
-                        
+                    
                         list.get(i).add(num1 + num2);
                         list.get(i).add(num1 * num2);
                         
@@ -38,14 +38,13 @@ class Solution {
                     }
                     
                 }
-                    
                 
             }
             
             if (list.get(i).contains(number)) return i;
             
         }
-        
+            
         return answer;
     }
 }
