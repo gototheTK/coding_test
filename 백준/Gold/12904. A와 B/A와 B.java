@@ -5,6 +5,7 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
+
         String S = sc.next();
         String T = sc.next();
 
@@ -12,7 +13,7 @@ public class Main {
 
         while (sb.length() > S.length()) {
 
-            char lastChar = sb.charAt(sb.length() - 1);
+            char lastChar = sb.charAt(sb.length()-1);
 
             if (lastChar == 'A') {
                 sb.deleteCharAt(sb.length()-1);
