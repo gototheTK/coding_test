@@ -1,81 +1,46 @@
 import java.util.*;
 
 class Solution {
-    
-    private int[] dijkstra(int n, int start, List<int[]>[] graph) {
-        
-        int[] dist = new int[n+1];
-        Arrays.fill(dist, Integer.MAX_VALUE);
-        
-        boolean[] visited = new boolean[n+1];
-        
-        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(o->o[1]));
-        dist[start] = 0;
-        pq.add(new int[]{start, dist[start]});
-        
-        while(!pq.isEmpty()) {
-            
-            int[] way = pq.poll();
-            
-            int from = way[0];
-            int fromCost = way[1];
-            
-            if (fromCost>dist[from]) continue;
-            
-            for (int[] route : graph[from]) {
-                
-                int to = route[0];
-                int toCost = route[1];
-                
-                int cost = fromCost + toCost;
-                
-                if (dist[to] > cost) {
-                    dist[to] = cost;
-                    pq.add(new int[] {to, cost});
-                }
-                
-            }
-            
-        }
-        
-        return dist;
-        
-    }
-    
     public int solution(int n, int s, int a, int b, int[][] fares) {
         int answer = 0;
         
         /**
-        그래프를 만든다.
-        S, A, B에서 시작하여 다익스트라를 구한다.
-        S + A + B의 합이 최소가 되는 지점의 합을 구한다.
+        다익스트라를 적용해야한다.
+        1. A,B,S를 제외한 점 중에서 A, B, S에서 시작해서 가장 적은 비용의 경로를 구합니다.
+        2. 위에서 구한 가장 적은 비용의 합중에서 가장 작은 값을 구해서 리턴합니다.
         **/
         
         List<int[]>[] graph = new ArrayList[n+1];
         
-        for (int i=1; i<=n; i++) {
+        for (int i=0; i<=n; i++) {
             graph[i] = new ArrayList<>();
         }
         
         for (int[] fare : fares) {
-            int start = fare[0];
-            int end = fare[1];
+            
+            int from = fare[0];
+            int to = fare[1];
             int cost = fare[2];
             
-            graph[start].add(new int[]{end, cost});
-            graph[end].add(new int[]{start, cost});
+            graph[from].add(new int[] {to, cost});
+            graph[to].add(new int[] {from, cost});
+            
         }
         
-        int[] distS = dijkstra(n, s, graph);
-        int[] distA = dijkstra(n, a, graph);
-        int[] distB = dijkstra(n, b, graph);
+       int[] distS = dijkstra(graph, n, s);
+       int[] distA = dijkstra(graph, n, a);
+       int[] distB = dijkstra(graph, n, b);
         
         int min = Integer.MAX_VALUE;
         
         for (int i=1; i<=n; i++) {
             
-            if (distS[i]!=Integer.MAX_VALUE && distA[i]!=Integer.MAX_VALUE && distB[i]!=Integer.MAX_VALUE) {
+            if (distS[i]!=Integer.MAX_VALUE 
+                && distA[i]!=Integer.MAX_VALUE 
+                && distB[i]!=Integer.MAX_VALUE) {
+                
                 min = Math.min(min, distS[i] + distA[i] + distB[i]);
+                
             }
             
         }
@@ -84,4 +49,44 @@ class Solution {
         
         return answer;
     }
+    
+    private int[] dijkstra (List<int[]>[] graph, int n, int from) {
+        
+        int[] dist = new int[n+1];
+        
+        for (int i=0; i<=n; i++) {
+            dist[i] = Integer.MAX_VALUE;
+        }
+        
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(o->o[1]));
+        dist[from] = 0;
+        pq.add(new int[] {from, 0});
+        
+        while (!pq.isEmpty()) {
+            
+            int[] e1 = pq.poll();
+            
+            int current = e1[0];
+            int currentCost = e1[1];
+            
+            if (currentCost > dist[current]) continue;
+            
+            for (int[] e2 : graph[current]) {
+                
+                int next = e2[0];
+                int nextCost = currentCost + e2[1];
+                
+                if (dist[next] > nextCost) {
+                    dist[current] = currentCost;
+                    pq.add(new int[] {next, nextCost});
+                }   
+                
+            }
+            
+        }
+        
+        return dist;
+        
+    } 
+    
 }
