@@ -4,12 +4,6 @@ class Solution {
     public int solution(int n, int s, int a, int b, int[][] fares) {
         int answer = 0;
         
-        /**
-        다익스트라를 적용해야한다.
-        1. A,B,S를 제외한 점 중에서 A, B, S에서 시작해서 가장 적은 비용의 경로를 구합니다.
-        2. 위에서 구한 가장 적은 비용의 합중에서 가장 작은 값을 구해서 리턴합니다.
-        **/
-        
         List<int[]>[] graph = new ArrayList[n+1];
         
         for (int i=0; i<=n; i++) {
@@ -17,30 +11,22 @@ class Solution {
         }
         
         for (int[] fare : fares) {
+            int from = fare[0], to = fare[1], cost = fare[2];
             
-            int from = fare[0];
-            int to = fare[1];
-            int cost = fare[2];
-            
-            graph[from].add(new int[] {to, cost});
-            graph[to].add(new int[] {from, cost});
-            
+            graph[from].add(new int[]{to, cost});
+            graph[to].add(new int[]{from, cost});
         }
         
-       int[] distS = dijkstra(graph, n, s);
-       int[] distA = dijkstra(graph, n, a);
-       int[] distB = dijkstra(graph, n, b);
+        int[] distS = dijkstra(graph, n, s);
+        int[] distA = dijkstra(graph, n, a);
+        int[] distB = dijkstra(graph, n, b);
         
         int min = Integer.MAX_VALUE;
         
         for (int i=1; i<=n; i++) {
             
-            if (distS[i]!=Integer.MAX_VALUE 
-                && distA[i]!=Integer.MAX_VALUE 
-                && distB[i]!=Integer.MAX_VALUE) {
-                
+            if (distS[i] != Integer.MAX_VALUE && distA[i] != Integer.MAX_VALUE && distB[i] != Integer.MAX_VALUE) {
                 min = Math.min(min, distS[i] + distA[i] + distB[i]);
-                
             }
             
         }
@@ -50,7 +36,7 @@ class Solution {
         return answer;
     }
     
-    private int[] dijkstra (List<int[]>[] graph, int n, int from) {
+    public int[] dijkstra(List<int[]>[] graph, int n, int start) {
         
         int[] dist = new int[n+1];
         
@@ -59,27 +45,27 @@ class Solution {
         }
         
         PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(o->o[1]));
-        dist[from] = 0;
-        pq.add(new int[] {from, 0});
+        dist[start] = 0;
+        pq.add(new int[]{start, dist[start]});
         
         while (!pq.isEmpty()) {
             
             int[] e1 = pq.poll();
             
-            int current = e1[0];
-            int currentCost = e1[1];
+            int from = e1[0];
+            int fromCost = e1[1];
             
-            if (currentCost > dist[current]) continue;
+            if (dist[from] < fromCost) continue;
             
-            for (int[] e2 : graph[current]) {
+            for (int[] e2 : graph[from]) {
                 
-                int next = e2[0];
-                int nextCost = currentCost + e2[1];
+                int to = e2[0];
+                int toCost = fromCost + e2[1];
                 
-                if (dist[next] > nextCost) {
-                    dist[current] = currentCost;
-                    pq.add(new int[] {next, nextCost});
-                }   
+                if (dist[to] > toCost) {
+                    dist[to] = toCost;
+                    pq.add(new int[]{to, toCost});
+                }
                 
             }
             
@@ -87,6 +73,5 @@ class Solution {
         
         return dist;
         
-    } 
-    
+    }
 }
