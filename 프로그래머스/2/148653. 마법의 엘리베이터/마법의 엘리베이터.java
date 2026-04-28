@@ -2,28 +2,24 @@ class Solution {
     public int solution(int storey) {
         int answer = 0;
         
+        int num = storey;
         int count = 0;
-        int current = storey;
         
-        while (current > 0) {
+        while (num > 0) {
             
-            int left = current % 10;
+            int remain = num%10;
+            num /= 10;
             
-            current /= 10;
-            
-            if (left > 5) {
-                current += 1;
-                count += 10-left;
-            }else if (left==5) {
+            if (remain>5) {
+                count += 10 - remain;
+                num += 1;
+            }else if (remain == 5) {
+                count += remain;
                 
-                count += 5;
-                
-                int next = current % 10;
-                current += next >= 5 ? 1 : 0;
-               
-                
+                int next = num % 10;
+                num += next >= 5 ? 1 : 0;
             }else {
-                count += left;
+                count += remain;
             }
             
         }
