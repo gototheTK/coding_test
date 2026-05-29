@@ -1,64 +1,67 @@
 import java.util.*;
-import java.util.stream.Collectors;class Song implements Comparable<Song> {
+import java.util.stream.Collector;
+import java.util.stream.Collectors;class Solution {
 
-    int index;
+    static class Song implements Comparable<Song> {
 
-    String genre;
+        int index;
 
-    int plays;
+        String genre;
 
-    public Song(int index, String genre, int plays) {
-        this.index = index;
-        this.genre = genre;
-        this.plays = plays;
-    }
+        int plays;
 
-    public int getIndex() {return this.index;}
+        public int getIndex() {return this.index;}
 
-    public String getGenre() {return this.genre;}
+        public String getGenre() {return this.genre;}
 
-    public int getPlays() {return this.plays;}
+        public int getPlays() {return this.plays;}
 
-    @Override
-    public int compareTo(Song other) {
-
-        if (this.plays == other.plays) {
-            return Integer.compare(this.index, other.index);
+        public Song(int index, String genre, int plays) {
+            this.index = index;
+            this.genre = genre;
+            this.plays = plays;
         }
 
-        return Integer.compare(other.plays, this.plays);
-    }
-}
+        @Override
+        public int compareTo(Song o){
 
-class Solution {
+            if(this.plays == o.plays){
+                return Integer.compare(this.index, o.index);
+            }
+
+            return Integer.compare(o.plays, this.plays);
+        }
+
+    }
 
     public int[] solution(String[] genres, int[] plays) {
 
         int[] answer = {};
 
-        Map<String, List<Song>> songsByGenres = new HashMap<>();
+        Map<String, List<Song>> songsByGenre = new HashMap<>();
 
         for (int i=0; i<genres.length; i++) {
-            songsByGenres.computeIfAbsent(genres[i], key -> new ArrayList<>()).add(new Song(i, genres[i], plays[i]));
+            songsByGenre.computeIfAbsent(genres[i], key -> new ArrayList<>()).add(new Song(i, genres[i], plays[i]));
         }
 
-        songsByGenres.values().forEach(Collections::sort);
+        songsByGenre.values().forEach(Collections::sort);
 
-        List<String> sortedGenres = songsByGenres.keySet().stream()
-                .sorted((g1, g2) -> {
-                    int sum1 = songsByGenres.get(g1).stream().mapToInt(Song::getPlays).sum();
-                    int sum2 = songsByGenres.get(g2).stream().mapToInt(Song::getPlays).sum();
+        List<String> sortedGenres = songsByGenre.keySet().stream()
+                .sorted((s1, s2) -> {
+                    int sum1 = songsByGenre.get(s1).stream().mapToInt(Song::getPlays).sum();
+                    int sum2 = songsByGenre.get(s2).stream().mapToInt(Song::getPlays).sum();
+
                     return Integer.compare(sum2, sum1);
                 })
                 .collect(Collectors.toList());
 
         List<Integer> result = new ArrayList<>();
         for (String genre : sortedGenres) {
-            List<Song> list = songsByGenres.get(genre);
-            result.add(list.get(0).index);
-            if (list.size() > 1) result.add(list.get(1).index);
+            List<Song> sortedSongs = songsByGenre.get(genre);
+            result.add(sortedSongs.remove(0).index);
+            if (!sortedSongs.isEmpty()) result.add(sortedSongs.remove(0).index);
         }
-
+        
         answer = result.stream().mapToInt(Integer::intValue).toArray();
 
         return answer;
@@ -66,3 +69,5 @@ class Solution {
     }
 
 }
+
+
