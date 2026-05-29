@@ -1,55 +1,54 @@
 import java.util.*;
-import java.util.stream.*;
+import java.util.stream.Collectors;
 
-class Solution {
+    class Solution {
     public int[] solution(String[] genres, int[] plays) {
         int[] answer = {};
-        
-        /**
-        장르별 곡들을 분류한다.
-        가장 많이 재생된 장르의 순위를 정렬하고,
-        분류한 곡들을 재생순으로 순위를 매긴다.
-        **/
-        
-        Map<String, List<Integer>> bestGenresMap = new HashMap<>();
-        Map<String, Integer> bestPlaysMap = new HashMap<>();
-        
+
+        Map<String, List<Integer>> genrePlays = new HashMap<>();
+        Map<String, List<Integer>> genreIndexes = new HashMap<>();
+
         for (int i=0; i<genres.length; i++) {
-            
-            bestGenresMap.computeIfAbsent(genres[i], k ->new ArrayList<>());
-            bestGenresMap.get(genres[i]).add(i);
-            
-            int sum = bestPlaysMap.getOrDefault(genres[i], 0) + plays[i];
-            bestPlaysMap.put(genres[i], sum);
+
+            List<Integer> genreList = genrePlays.computeIfAbsent(genres[i], key-> new ArrayList<>());
+            List<Integer> indexList = genreIndexes.computeIfAbsent(genres[i], key -> new ArrayList<>());
+
+            genreList.add(plays[i]);
+            indexList.add(i);
         }
-        
-        List<String> bestGenres = bestGenresMap.keySet().stream()
-            .sorted((o1, o2) -> bestPlaysMap.get(o2)-bestPlaysMap.get(o1))
-            .collect(Collectors.toList());
-        
+
+        Map<String, Integer> playsSums = genrePlays.entrySet().stream()
+                .map(entry -> new AbstractMap.SimpleEntry<>(
+                        entry.getKey(),
+                        entry.getValue().stream().mapToInt(Integer::intValue).sum()
+                ))
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+
+        genreIndexes.forEach((key, list) -> list.sort(
+                (i1, i2) -> plays[i2] - plays[i1]
+        ));
+
+
         List<Integer> result = new ArrayList<>();
-        
-        for (String genre : bestGenres) {
+
+        for (String genre : playsSums.keySet()) {
             
-            List<Integer> list = bestGenresMap.get(genre).stream()
-                .sorted((o1, o2)-> {
-                    
-                    if (plays[o1]==plays[o2]) return o1-o2;
-                    
-                    return plays[o2]-plays[o1];
-                    
-                })
-                .collect(Collectors.toList());
+            List<Integer> list = genreIndexes.get(genre);
             
             result.add(list.get(0));
             
-            if (list.size()>1)
-                result.add(list.get(1));
+            if (list.size() > 1) result.add(list.get(1));
             
         }
         
-        answer = result.stream().mapToInt(Integer::valueOf).toArray();
-        
+        answer = result.stream().mapToInt(Integer::intValue).toArray();
+
         return answer;
     }
 }
