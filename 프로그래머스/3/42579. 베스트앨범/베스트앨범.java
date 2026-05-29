@@ -1,54 +1,68 @@
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.Collectors;class Song implements Comparable<Song> {
 
-    class Solution {
+    int index;
+
+    String genre;
+
+    int plays;
+
+    public Song(int index, String genre, int plays) {
+        this.index = index;
+        this.genre = genre;
+        this.plays = plays;
+    }
+
+    public int getIndex() {return this.index;}
+
+    public String getGenre() {return this.genre;}
+
+    public int getPlays() {return this.plays;}
+
+    @Override
+    public int compareTo(Song other) {
+
+        if (this.plays == other.plays) {
+            return Integer.compare(this.index, other.index);
+        }
+
+        return Integer.compare(other.plays, this.plays);
+    }
+}
+
+class Solution {
+
     public int[] solution(String[] genres, int[] plays) {
+
         int[] answer = {};
 
-        Map<String, List<Integer>> genrePlays = new HashMap<>();
-        Map<String, List<Integer>> genreIndexes = new HashMap<>();
+        Map<String, List<Song>> songsByGenres = new HashMap<>();
 
         for (int i=0; i<genres.length; i++) {
-
-            List<Integer> genreList = genrePlays.computeIfAbsent(genres[i], key-> new ArrayList<>());
-            List<Integer> indexList = genreIndexes.computeIfAbsent(genres[i], key -> new ArrayList<>());
-
-            genreList.add(plays[i]);
-            indexList.add(i);
+            songsByGenres.computeIfAbsent(genres[i], key -> new ArrayList<>()).add(new Song(i, genres[i], plays[i]));
         }
 
-        Map<String, Integer> playsSums = genrePlays.entrySet().stream()
-                .map(entry -> new AbstractMap.SimpleEntry<>(
-                        entry.getKey(),
-                        entry.getValue().stream().mapToInt(Integer::intValue).sum()
-                ))
-                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new
-                ));
+        songsByGenres.values().forEach(Collections::sort);
 
-        genreIndexes.forEach((key, list) -> list.sort(
-                (i1, i2) -> plays[i2] - plays[i1]
-        ));
-
+        List<String> sortedGenres = songsByGenres.keySet().stream()
+                .sorted((g1, g2) -> {
+                    int sum1 = songsByGenres.get(g1).stream().mapToInt(Song::getPlays).sum();
+                    int sum2 = songsByGenres.get(g2).stream().mapToInt(Song::getPlays).sum();
+                    return Integer.compare(sum2, sum1);
+                })
+                .collect(Collectors.toList());
 
         List<Integer> result = new ArrayList<>();
-
-        for (String genre : playsSums.keySet()) {
-            
-            List<Integer> list = genreIndexes.get(genre);
-            
-            result.add(list.get(0));
-            
-            if (list.size() > 1) result.add(list.get(1));
-            
+        for (String genre : sortedGenres) {
+            List<Song> list = songsByGenres.get(genre);
+            result.add(list.get(0).index);
+            if (list.size() > 1) result.add(list.get(1).index);
         }
-        
+
         answer = result.stream().mapToInt(Integer::intValue).toArray();
 
         return answer;
+
     }
+
 }
