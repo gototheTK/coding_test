@@ -4,40 +4,31 @@ class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
         int[] answer = {};
         
-        Deque<Integer> progress = new ArrayDeque<>();
-        Deque<Integer> speed = new ArrayDeque<>();
-        
-        for (int i=0; i<progresses.length; i++) {
-            progress.add(progresses[i]);
-            speed.add(speeds[i]);
-        }
-        
         List<Integer> result = new ArrayList<>();
         
-        int time = 0;
-        int count = 0;
+        int index = 0;
         
-        while (!progress.isEmpty()) {
+        while (index < progresses.length) {
             
-            int p = progress.getFirst();
-            int s = speed.getFirst();
-            
-            if (p + s * time >= 100) {
-                progress.poll();
-                speed.poll();
-                count++;
-            }else if(count > 0) {
-                result.add(count);
-                count = 0;
-            }else {
-                time++;
+            for (int i=index; i<speeds.length; i++) {
+                
+                progresses[i] += speeds[i];
+                
             }
+            
+            int count = 0;
+            
+            while (index < progresses.length
+            && progresses[index] >= 100) {
+                count++;
+                index++;
+            }
+            
+            if (count > 0) result.add(count);
             
         }
         
-        result.add(count);
-        
-        answer = result.stream().mapToInt(Integer::valueOf).toArray();
+        answer = result.stream().mapToInt(Integer::intValue).toArray();
         
         return answer;
     }
