@@ -2,42 +2,40 @@ import java.util.*;
 
 class Solution {
     public int solution(int[][] maps) {
-        int answer = -1;
-        
-        int m = maps.length-1;
-        int n = maps[0].length-1;
+        int answer = 0;
         
         Queue<int[]> queue = new ArrayDeque<>();
         maps[0][0] = 0;
-        queue.add(new int[] {0, 0, 1});
+        queue.add(new int[]{0, 0, 1});
         
-        int[] dx = {0, 0, 1, -1};
-        int[] dy = {1, -1, 0, 0};
+        int[][] directions = {{1,0}, {0,1}, {-1,0}, {0,-1}};
         
-        while(!queue.isEmpty()) {
+        while (!queue.isEmpty()) {
             
-            int[] move = queue.poll();
+            int[] coordinate = queue.poll();
             
-            int x = move[0];
-            int y = move[1];
-            int cost = move[2];
+            int x = coordinate[0];
+            int y = coordinate[1];
+            int c = coordinate[2];
             
-            if (x==m && y==n) return cost;
+            if (x == maps.length-1 && y == maps[0].length-1) return c;
             
-            for (int i=0; i<4; i++) {
-                int nx = x + dx[i];
-                int ny = y + dy[i];
+            for (int[] direction : directions) {
                 
-            
-                if (nx<=m && nx>=0 && ny<=n && ny>=0 && maps[nx][ny]==1) {
-                    maps[nx][ny] = 0;
-                    queue.add(new int[] {nx, ny, cost+1});
+                int nextX = x + direction[0];
+                int nextY = y + direction[1];
+                
+                if (nextX >= 0 && nextX < maps.length
+                && nextY >= 0 && nextY < maps[0].length
+                && maps[nextX][nextY] == 1) {
+                    queue.add(new int[]{nextX, nextY, c+1});
+                    maps[nextX][nextY] = 0;
                 }
                 
             }
             
         }
         
-        return answer;
+        return -1;
     }
 }
